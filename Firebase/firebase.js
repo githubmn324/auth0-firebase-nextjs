@@ -1,5 +1,5 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { getAuth, OAuthProvider, signInWithCredential, signInWithCustomToken, signOut } from "firebase/auth";
+import { getAuth, signInWithCustomToken, signOut } from "firebase/auth";
 
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
@@ -27,53 +27,32 @@ export const signInFirebase = async () => {
         method: "signInFirebase",
         message: "entering"
     })
-    // const response = await fetch('/api/firebase');
-    // const data = await response.json();
-    // console.log({
-    //     method: "fetch '/api/firebase'",
-    //     result: data
-    // })
-    
-    const response = await fetch('/api/session');
-    
-    const provider = new OAuthProvider("oidc.auth0-nakagome");
-    const credential = provider.credential({
-        idToken: data.idToken,
-    });
-    signInWithCredential(auth, credential).then((result) => {
-        // User is signed in.
-        const newCredential = OAuthProvider.credentialFromResult(result);
-        // This gives you a new access token for the OIDC provider. You can use it to directly interact with that provider.
-        }).catch((error) => {
-            // Handle Errors here.
+    const response = await fetch('/api/firebase');
+    const data = await response.json();
+    console.log({
+        method: "fetch '/api/firebase'",
+        result: data
+    })
+
+    signInWithCustomToken(auth, data.firebaseToken)
+        .then((userCredential) => {
+            const user = userCredential.user;
+            console.log({
+                method: "signInWithCustomToken",
+                message: "Firebase Sign-in successful",
+                userCredential: userCredential,
+                idToken: userCredential["_tokenResponse"]["idToken"]
+            });
+        })
+        .catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
-            // The email of the user's account used.
-            const email = error.customData.email;
-            // The AuthCredential type that was used.
-            const credential = OAuthProvider.credentialFromError(error);
-            // Handle / display error.
-            // ...
+            console.log({
+                method: "signInWithCustomToken",
+                message: "Firebase Sign-in failed",
+                error: `errorCode: ${errorCode} errorMessage: ${errorMessage}`
+            });
         });
-    // signInWithCustomToken(auth, data.firebaseToken)
-    //     .then((userCredential) => {
-    //         const user = userCredential.user;
-    //         console.log({
-    //             method: "signInWithCustomToken",
-    //             message: "Firebase Sign-in successful",
-    //             userCredential: userCredential,
-    //             idToken: userCredential["_tokenResponse"]["idToken"]
-    //         });
-    //     })
-    //     .catch((error) => {
-    //         const errorCode = error.code;
-    //         const errorMessage = error.message;
-    //         console.log({
-    //             method: "signInWithCustomToken",
-    //             message: "Firebase Sign-in failed",
-    //             error: `errorCode: ${errorCode} errorMessage: ${errorMessage}`
-    //         });
-    //     });
 }
 
 export const signOutFirebase = () => {

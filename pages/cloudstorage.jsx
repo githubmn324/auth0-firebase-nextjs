@@ -71,6 +71,25 @@ function CloudStorage() {
       console.log(error);
     }
   }
+  // Auth0側のorganization追加
+  const createOrganization=(e)=>{
+    const org = {
+      "name": "organization-1",
+      "display_name": "Acme Users",
+      "branding": {
+        "logo_url": "",
+        "colors": {
+          "primary": "",
+          "page_background": ""
+        }
+      },
+      "metadata": {},
+      "enabled_connections": [
+        "object"
+      ]
+    }
+    setNewOrgId()
+  }
   
   // 画像の保存
   const handleChange = (e) => {
