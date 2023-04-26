@@ -2,7 +2,7 @@ import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth, signInWithCustomToken, signOut } from "firebase/auth";
 
 import { getFirestore } from "firebase/firestore";
-import { getStorage } from "firebase/storage";
+// import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBJSIFyuqKWF06rjGYwgERXxaaz_fxI2_E",
@@ -13,14 +13,12 @@ const firebaseConfig = {
     appId: "1:901508578456:web:aa06b827829b91b373e4ed"
 };
 
-const app = initializeApp(firebaseConfig);
+export const app = initializeApp(firebaseConfig);
 // const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 export const auth = getAuth(app);
-console.log({
-    'firebase authentication': auth
-})
 export const db = getFirestore(app);
-export const cloudStorage = getStorage(app);
+// export const cloudStorage = getStorage(app);
+// export const orgCloudStorage = getStorage(app, `gs://kaigofika-poc01.appspot.com/${org_id}`);
 
 export const signInFirebase = async () => {
     console.log({

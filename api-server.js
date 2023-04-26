@@ -62,12 +62,6 @@ app.get('/api/firebase', checkJwt, async (req, res) => {
   console.log({
     method: "### /api/firebase",
   });
-  console.log({
-    req: req
-  });
-  console.log({
-    res: res
-  });
   // const {sub: uid} = req.user;
   const {sub: uid} = req.auth;
   console.log("### req.auth");

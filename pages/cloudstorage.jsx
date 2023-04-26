@@ -8,14 +8,17 @@ import Highlight from '../components/Highlight';
 import { Button } from 'reactstrap';
 
 // firebase
-import { cloudStorage, signInFirebase, signOutFirebase } from '../Firebase/firebase'
+import { 
+  app,
+  signInFirebase,
+  signOutFirebase
+} from '../Firebase/firebase'
 // cloud storage
-import { ref, uploadBytes, getDownloadURL, updateMetadata, getMetadata, uploadString, deleteObject } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL, uploadString, deleteObject } from "firebase/storage";
 // The ID of your GCS bucket & file
 const bucketName = "kaigofika-poc01.appspot.com";
-// const fileName = 'test01.txt';
-// const imageName = "image_1.png";
-// const dogImageName = "dogimage01.png"
+import { getStorage } from "firebase/storage";
+const cloudStorage = getStorage(app);
 
 function CloudStorage() {
   const { user, isLoading } = useUser();
@@ -61,34 +64,15 @@ function CloudStorage() {
       const initFile = '.initFile'
       const initFileRef = ref(
         cloudStorage,
-        `gs://${bucketName}/collection001/${newOrgId}/${initFile}`
+        `gs://${bucketName}/${newOrgId}/${initFile}`
       );
       await uploadString(initFileRef, "initial")
-      await deleteObject(initFileRef)
+      // await deleteObject(initFileRef)
       signOutFirebase();
     }catch(error){
       signOutFirebase();
       console.log(error);
     }
-  }
-  // Auth0側のorganization追加
-  const createOrganization=(e)=>{
-    const org = {
-      "name": "organization-1",
-      "display_name": "Acme Users",
-      "branding": {
-        "logo_url": "",
-        "colors": {
-          "primary": "",
-          "page_background": ""
-        }
-      },
-      "metadata": {},
-      "enabled_connections": [
-        "object"
-      ]
-    }
-    setNewOrgId()
   }
   
   // 画像の保存
@@ -99,7 +83,7 @@ function CloudStorage() {
     try {
       e.preventDefault();
       console.log(uploadImage);
-      const uploadImageRef = ref(cloudStorage, uploadImage.name);
+      const uploadImageRef = ref(cloudStorage, `gs://${bucketName}/${user.org_id}/${uploadImage.name}`);
       uploadBytes(uploadImageRef, image).then((res) => {
         console.log({
           method: "handleSubmit",
@@ -107,12 +91,6 @@ function CloudStorage() {
           res: res
         });
       });
-      updateMetadata(uploadImageRef, metaData).then((metadata) => {
-          console.log({
-            method: "updateMetadata",
-            metadata: metadata
-          })
-        }).catch((error)=> console.log(error));
     } catch (err) {
       console.log(err);
     }
