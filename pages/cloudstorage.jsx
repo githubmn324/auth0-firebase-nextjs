@@ -67,7 +67,7 @@ function CloudStorage() {
         `gs://${bucketName}/${newOrgId}/${initFile}`
       );
       await uploadString(initFileRef, "initial")
-      // await deleteObject(initFileRef)
+      // await deleteObject(initFileRef) // フォルダも削除されてしまうので、削除は行わない
       signOutFirebase();
     }catch(error){
       signOutFirebase();
